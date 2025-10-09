@@ -27,20 +27,20 @@ bool SsbProcessor::init(const SsbConfig& config, double srate_hz, double center_
       return false;
   }
   
-  config_ = config;
-  srate_hz_ = srate_hz;
-  center_freq_hz_ = center_freq_hz;
+  config_           = config;
+  srate_hz_         = srate_hz;
+  center_freq_hz_   = center_freq_hz;
   
   // Initialize SSB arguments
-  srsran_ssb_args_t args = {};
-  args.max_srate_hz = srate_hz;
-  args.min_scs = srsran_subcarrier_spacing_15kHz;
-  args.enable_search = true;
-  args.enable_measure = true;
-  args.enable_encode = true;
-  args.enable_decode = true;
-  args.disable_polar_simd = false;
-  args.pbch_dmrs_thr = 0.0f; // Use default
+  srsran_ssb_args_t args    = {};
+  args.max_srate_hz         = srate_hz;
+  args.min_scs              = srsran_subcarrier_spacing_15kHz;
+  args.enable_search        = true;
+  args.enable_measure       = true;
+  args.enable_encode        = true;
+  args.enable_decode        = true;
+  args.disable_polar_simd   = false;
+  args.pbch_dmrs_thr        = 0.0f; // Use default
   
   std::cout << "Initializing SSB processor..." << std::endl;
   if (srsran_ssb_init(&ssb_, &args) != SRSRAN_SUCCESS) {
@@ -60,27 +60,27 @@ bool SsbProcessor::configure(const SsbConfig& config, double srate_hz, double ce
       return false;
   }
   
-  config_ = config;
-  srate_hz_ = srate_hz;
-  center_freq_hz_ = center_freq_hz;
+  config_           = config;
+  srate_hz_         = srate_hz;
+  center_freq_hz_   = center_freq_hz;
   
   // Calculate actual SSB frequency (center frequency + offset)
   double ssb_freq_hz = center_freq_hz + config.ssb_freq_offset_hz;
   
   // Setup SSB configuration
-  srsran_ssb_cfg_t ssb_cfg = {};
-  ssb_cfg.srate_hz = srate_hz;
-  ssb_cfg.center_freq_hz = center_freq_hz;  // Use actual RF center frequency
-  ssb_cfg.ssb_freq_hz = ssb_freq_hz;        // Use actual SSB frequency
-  ssb_cfg.scs = scs_from_khz(config.scs_khz);
-  ssb_cfg.pattern = pattern_from_string(config.pattern);
-  ssb_cfg.duplex_mode = SRSRAN_DUPLEX_MODE_FDD;
-  ssb_cfg.periodicity_ms = config.periodicity_ms;
-  ssb_cfg.beta_pss = config.beta_pss;
-  ssb_cfg.beta_sss = config.beta_sss;
-  ssb_cfg.beta_pbch = config.beta_pbch;
-  ssb_cfg.beta_pbch_dmrs = config.beta_pbch_dmrs;
-  ssb_cfg.scaling = 0.0f; // Use default
+  srsran_ssb_cfg_t ssb_cfg  = {};
+  ssb_cfg.srate_hz          = srate_hz;
+  ssb_cfg.center_freq_hz    = center_freq_hz;  // Use actual RF center frequency
+  ssb_cfg.ssb_freq_hz       = ssb_freq_hz;        // Use actual SSB frequency
+  ssb_cfg.scs               = scs_from_khz(config.scs_khz);
+  ssb_cfg.pattern           = pattern_from_string(config.pattern);
+  ssb_cfg.duplex_mode       = SRSRAN_DUPLEX_MODE_FDD;
+  ssb_cfg.periodicity_ms    = config.periodicity_ms;
+  ssb_cfg.beta_pss          = config.beta_pss;
+  ssb_cfg.beta_sss          = config.beta_sss;
+  ssb_cfg.beta_pbch         = config.beta_pbch;
+  ssb_cfg.beta_pbch_dmrs    = config.beta_pbch_dmrs;
+  ssb_cfg.scaling           = 0.0f; // Use default
   
   std::cout << "Configuring SSB processor..." << std::endl;
   std::cout << "  Sample rate: " << srate_hz / 1e6 << " MHz" << std::endl;
@@ -128,12 +128,12 @@ SsbSearchResult SsbProcessor::scan(const std::complex<float>* buffer, uint32_t n
       return result;
   }
   
-  result.found = true;
-  result.pci = search_res.N_id;
-  result.pbch_msg = search_res.pbch_msg;
-  result.ssb_idx = search_res.pbch_msg.ssb_idx;
-  result.snr_db = search_res.measurements.snr_dB;  // Note: capital B
-  result.rsrp_dbm = search_res.measurements.rsrp_dB;
+  result.found      = true;
+  result.pci        = search_res.N_id;
+  result.pbch_msg   = search_res.pbch_msg;
+  result.ssb_idx    = search_res.pbch_msg.ssb_idx;
+  result.snr_db     = search_res.measurements.snr_dB;  // Note: capital B
+  result.rsrp_dbm   = search_res.measurements.rsrp_dB;
   
   // Decode MIB
   decode_mib(result.pbch_msg, result.mib);
