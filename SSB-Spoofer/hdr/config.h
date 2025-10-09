@@ -27,6 +27,7 @@ struct SsbConfig {
   uint32_t    scs_khz; 
   uint32_t    periodicity_ms;   ///< SSB periodicity in ms
   double      f_offset_hz;
+  double      ssb_freq_offset_hz; ///< SSB frequency offset
   float       beta_pss;         ///< PSS power allocation
   float       beta_sss;         ///< SSS power allocation
   float       beta_pbch;        ///< PBCH power allocation
@@ -42,17 +43,25 @@ struct AttackConfig {
   bool      scan_for_target;
 
   // MIB Modification flags
-  bool      modify_corset0_idx;
+  bool      modify_coreset0_idx;
   bool      modify_ss0_idx;
   bool      modify_cell_barred;
+  bool      modify_intra_freq_resel;
 
-  uint32_t  corset0_idx_value;
+  uint32_t  coreset0_idx_value;
   uint32_t  ss0_idx_value;
   bool      cell_barred_value;
+  bool      intra_freq_resel_value;
 
   // Transmission Parameters
   double    tx_power_db;
+  double    tx_power_offset_db;
   bool      continuous_tx;
+  
+  // Advanced Attack Modes - MULTI-PCI BURST MODE
+  bool      enable_multi_pci_burst;    // Transmit MANY PCIs rapidly (500+/sec)
+  uint32_t  num_burst_pcis;            // Number of fake PCIs per burst (10-100)
+  uint32_t  burst_rate_hz;             // Bursts per second (100-1000 Hz)
 };
 
 /**
@@ -62,6 +71,8 @@ struct OperationalConfig {
   double scan_duration_sec;
   std::string log_level;
   std::string log_file;
+  bool save_samples;
+  std::string samples_file;
 
 };
 

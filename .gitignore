@@ -1,2 +1,5 @@
 build/
 .cache/
+*.fc32
+*.dat
+*.log

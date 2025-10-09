@@ -33,6 +33,18 @@ public:
   bool stop_rx();
 
   /**
+  * @brief Start tx stream
+  * @return true if successful, false otherwise
+  */
+  bool start_tx();
+
+  /**
+  * @brief Stop tx stream
+  * @return true if successful, false otherwise
+  */
+  bool stop_tx();
+
+  /**
   * @brief Receive sampels from RF device
   * @param buffer Buffer to store received samples
   * @param nsamples Number of samples to receive
@@ -48,7 +60,7 @@ public:
   * @param end_of_burst true if it is the end of burst, false otherwise
   * @return Number of samples actually transmitted, negetive on error
   */
-  int transmit(std::complex<float>* buffer, uint32_t nsamples,
+  int transmit(const std::complex<float>* buffer, uint32_t nsamples,
                bool start_of_burst = false, bool end_of_burst = false);
 
   /**
