@@ -165,6 +165,20 @@ Press Ctrl+C to stop...
 ...
 ```
 
+## Demonstration
+
+The effectiveness of the SSB spoofing attack can be observed through spectrum analysis. The following images show the RF spectrum before and during the attack:
+
+### Without SSB Spoofer
+![Spectrum without spoofer](assets/without_spoofer.png)
+*Normal 5G spectrum showing legitimate SSB signals from the target gNB*
+
+### With SSB Spoofer Active
+![Spectrum with spoofer](assets/with_spoofer.png)
+*Spectrum during attack showing continuous spoofed SSB transmission overpowering legitimate signals*
+
+The spoofed signals appear as continuous high-power transmissions that prevent UE devices from successfully completing cell selection and attachment procedures.
+
 ### Advanced Configuration
 
 For targeting specific cells, you may need to:
