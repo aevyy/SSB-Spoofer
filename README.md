@@ -256,10 +256,10 @@ This project is part of the ORAN Testing Library initiative. Contributions are w
 If you use this tool in your research, please cite our work:
 
 ```bibtex
-@software{ssb_spoofer_2024,
+@software{ssb_spoofer_2025,
   title={SSB-Spoofer: 5G NR SSB Signal Spoofing Tool},
   author={ORAN Testing Team},
-  year={2024},
+  year={2025},
   url={https://github.com/oran-testing/SSB-Spoofer}
 }
 ```
