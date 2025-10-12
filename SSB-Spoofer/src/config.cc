@@ -143,6 +143,11 @@ bool ConfigParser::load_from_file(const std::string& filename, Config& config) {
   config.attack.tx_power_offset_db      = get_value<double>(config_map, "attack.tx_power_offset_db", 0.0);
   config.attack.continuous_tx           = get_value<bool>(config_map, "attack.continuous_tx", true);
   
+  // Parse burst control parameters
+  config.attack.max_bursts              = get_value<uint64_t>(config_map, "attack.max_bursts", 0);
+  config.attack.burst_interval_us       = get_value<uint32_t>(config_map, "attack.burst_interval_us", 500);
+  config.attack.burst_length_ms         = get_value<uint32_t>(config_map, "attack.burst_length_ms", 1);
+  
   // operation config
   config.operation.scan_duration_sec    = get_value<double>(config_map, "operation.scan_duration_sec", 10.0);
   config.operation.log_level            = get_value<std::string>(config_map, "operation.log_level", "info");
@@ -226,6 +231,12 @@ void ConfigParser::print(const Config& config) {
   }
   std::cout << "\n";
   std::cout << "  continuous TX: " << (config.attack.continuous_tx ? "yes" : "no") << "\n";
+  
+  std::cout << "\n[Burst Control]\n";
+  std::cout << "  max bursts: " << (config.attack.max_bursts == 0 ? "unlimited" : std::to_string(config.attack.max_bursts)) << "\n";
+  std::cout << "  burst interval: " << config.attack.burst_interval_us << " us\n";
+  std::cout << "  burst length: " << config.attack.burst_length_ms << " ms\n";
+  
   std::cout << "\n--------------------\n\n";
 }
 

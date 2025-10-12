@@ -166,16 +166,20 @@ int RfHandler::transmit(const std::complex<float>* buffer, uint32_t nsamples,
                                true, start_of_burst, end_of_burst);
   
   if (nsent < 0) {
-      std::cerr << "[RF ERROR] srsran_rf_send_multi failed with error code: " << nsent << std::endl;
-      std::cerr << "[RF ERROR] Parameters: nsamples=" << nsamples 
-               << ", start_of_burst=" << start_of_burst 
-               << ", end_of_burst=" << end_of_burst << std::endl;
+      // Only print error occasionally to avoid log spam
+      static int error_count = 0;
+      if (error_count++ % 100 == 0) {
+          std::cerr << "\n[RF] Transmission error (count: " << error_count << ")" << std::endl;
+      }
       return nsent;
   }
   
-  // Warn if we didn't transmit all samples
+  // Warn if we didn't transmit all samples (only first few times)
   if (nsent != (int)nsamples) {
-      std::cerr << "[RF WARNING] Transmitted " << nsent << " samples, expected " << nsamples << std::endl;
+      static int warn_count = 0;
+      if (warn_count++ < 5) {
+          std::cerr << "\n[RF] Transmitted " << nsent << " samples, expected " << nsamples << std::endl;
+      }
   }
   
   return nsent;

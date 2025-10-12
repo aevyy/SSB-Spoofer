@@ -1,0 +1,160 @@
+Active RF plugins: libsrsran_rf_uhd.so libsrsran_rf_zmq.so
+Inactive RF plugins: 
+
+  ========================================================================
+                       5G NR SSB Spoofer v1.0                            
+  ========================================================================
+      WARNING: For authorized security research and testing only!        
+  ========================================================================
+
+
+  >> Loading configuration from: ../config.yaml
+
+--- Configuration ---
+
+[RF]
+  device: uhd
+  args: type=b200
+  RX freq: 1842.05 MHz
+  TX freq: 1842.05 MHz
+  srate: 23.04 MHz
+  RX gain: 40 dB
+  TX gain: 60 dB
+
+[SSB]
+  pattern: A
+  SCS: 15 kHz
+  period: 10 ms
+
+[Attack]
+  target PCI: 500
+  scan for target: yes
+  modify cell_barred: no
+  modify CORESET0: no
+  continuous TX: yes
+
+[Burst Control]
+  max bursts: unlimited
+  burst interval: 500 us
+  burst length: 1 ms
+
+--------------------
+
+
+  --------------------------------------------------------
+            Initializing RF Device
+  --------------------------------------------------------
+Active RF plugins: libsrsran_rf_uhd.so libsrsran_rf_zmq.so
+Inactive RF plugins: 
+Opening RF device...
+Supported RF device list: UHD zmq file
+Trying to open RF device 'UHD'
+[INFO] [UHD] linux; GNU C++ version 14.1.1 20240701 (Red Hat 14.1.1-7); Boost_108300; UHD_4.7.0.0
+[INFO] [LOGGING] Fastpath logging disabled at runtime.
+Opening USRP channels=1, args: type=b200,master_clock_rate=23.04e6
+[INFO] [UHD RF] RF UHD Generic instance constructed
+[INFO] [B200] Detected Device: B210
+[INFO] [B200] Operating over USB 3.
+[INFO] [B200] Initialize CODEC control...
+[INFO] [B200] Initialize Radio control...
+[INFO] [B200] Performing register loopback test... 
+[INFO] [B200] Register loopback test passed
+[INFO] [B200] Performing register loopback test... 
+[INFO] [B200] Register loopback test passed
+[INFO] [B200] Asking for clock rate 23.040000 MHz... 
+[INFO] [B200] Actually got clock rate 23.040000 MHz.
+RF device 'UHD' successfully opened
+Setting RX gain: 40 dB
+Setting RX sample rate: 23.04 MHz
+  Actual RX sample rate: 23.04 MHz
+Setting RX frequency: 1842.05 MHz
+  Actual RX frequency: 1842.05 MHz
+Setting TX frequency: 1842.05 MHz
+  Actual TX frequency: 1842.05 MHz
+Setting TX gain: 60 dB
+RF device initialized successfully
+
+  --------------------------------------------------------
+            Initializing SSB Processor
+  --------------------------------------------------------
+Initializing SSB processor...
+Configuring SSB processor...
+  Sample rate: 23.04 MHz
+  Center frequency: 1842.05 MHz
+  SSB frequency: 1842.05 MHz
+  SSB pattern: A
+  Subcarrier spacing: 15 kHz
+SSB processor configured successfully
+
+  ======================================================================
+   SSB SCAN | PCI: 500 | Duration: 30s | RX Buffer: 23040 samples
+  ======================================================================
+
+  [*] Initializing receiver... Ready!
+  [!!!] SSB FOUND! | PCI: 500 | SNR: 20.4dB | RSRP: -16.0dBm | SSB#0     
+  ======================================================================
+
+=== MIB Information ===
+  SFN: 426
+  SSB Index: 0
+  Half Radio Frame: No
+  Subcarrier Spacing Common: 15 kHz
+  SSB Offset: 6
+  DMRS TypeA Position: 0
+  CORESET0 Index: 6
+  SearchSpace Zero Index: 0
+  Cell Barred: No
+  Intra-Freq Reselection: Allowed
+=======================
+
+
+  ======================================================================
+   ATTACK PREPARATION | Generating Spoofed SSB for PCI 500
+  ======================================================================
+  [*] Modifying MIB...
+=== Modifying MIB for SSB Spoofing Attack ===
+  [ATTACK] SearchSpace0 Index: 0 -> 15 (invalid SIB1 search space)
+  [INFO] Keeping SFN: 426 (for timing consistency)
+  [INFO] Keeping SSB Offset: 6
+  [INFO] Keeping DMRS position: 0
+=== SSB Spoofing Attack Configured ===
+ Done!
+  [*] Encoding MIB... Done!
+  [*] Generating signal... Done! (23040 samples)
+
+  ======================================================================
+   TRANSMISSION DASHBOARD
+  ----------------------------------------------------------------------
+   Samples/Burst:    23040  |  Burst Length:      1ms  |  Interval:  0.50ms
+   Sample Rate:   23.04MHz  |  Burst Rate:    666.7/s  |  TX Gain:    60.0dB
+  ======================================================================
+TX stream ready (will start on first transmission)
+
+  ======================================================================
+                  CONTINUOUS ATTACK IS ACTIVATED                        
+  ======================================================================
+  Target: PCI 500 | Max: unlimited bursts | Press Ctrl+C to stop
+
+  ○ TX:   >>>  Bursts:   42150  <<<   | Rate:  997.6 b/s | Time:  42.3s -          
+[RF] Transmission error (count: 1)
+  ◉ TX:    >>> Bursts:   65800 <<<    | Rate: 1055.8 b/s | Time:  62.3s \          
+[RF] Transmission error (count: 101)
+  ○ TX:   >>>  Bursts:   71550  <<<   | Rate: 1065.1 b/s | Time:  67.2s -          ^C
+Received signal 2, shutting down...
+
+
+  ======================================================================
+                         ATTACK STATISTICS                             
+  ======================================================================
+  Bursts Sent:          71591  |  Duration:    67.20s  |  Rate:   1065.3 b/s
+  Total Samples:   1649456640  |  Throughput:  24543660 samp/s
+  Samples/Burst:        23040  |  Burst Time: 0.939ms  |  Period:   10ms
+  Attack Ratio:        10.7 : 1 (vs real gNB)
+  ======================================================================
+
+  >> Stopping TX stream...
+Stopping TX stream...
+
+  ========================================================
+               Attack Execution Complete
+  ========================================================

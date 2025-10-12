@@ -87,96 +87,14 @@ cd build/SSB-Spoofer
 ./ssb_spoofer --config ../../config.yaml
 ```
 
+**Note:** A reference log file from a successful attack (`ssb_spoofer.log`) is included in the repository for comparison.
+
 The tool will:
 1. **Initialize SDR hardware** and configure RF parameters
 2. **Scan for target SSB** signals at the specified frequency
 3. **Decode MIB information** from the legitimate signal
 4. **Apply attack modifications** to MIB parameters
 5. **Generate and transmit** spoofed SSB signals continuously
-
-### Sample Output
-
-```
-========================================================
-              5G NR SSB Spoofer v1.0                    
-========================================================
- WARNING: This tool is for research purposes only!      
-          Unauthorized use may be illegal.              
-========================================================
-
->> Loading configuration from: config.yaml
-
---------------------------------------------------------
-  Initializing RF Device
---------------------------------------------------------
-
---------------------------------------------------------
-  Initializing SSB Processor
---------------------------------------------------------
-
---------------------------------------------------------
-  Starting SSB Scan
---------------------------------------------------------
-  Target PCI       : 500
-  Scan Duration    : 30 seconds
-  RX Buffer        : 23040 samples (1 ms)
-  Search Buffer    : 230400 samples (10 ms)
---------------------------------------------------------
-
->> Initializing receiver...
-   Ready. Starting capture...
-   Scanning... (2.3s)
-
->> SSB Detected!
-   PCI              : 500
-   SSB Index        : 0
-   SNR              : 24.7 dB
-   RSRP             : -21.2 dBm
-
-=== MIB Information ===
-  SFN: 913
-  Cell Barred: No
-  CORESET0 Index: 6
-  SearchSpace Zero Index: 0
-
---------------------------------------------------------
-  Generating Spoofed SSB
---------------------------------------------------------
->> Modifying MIB parameters...
-  [ATTACK] Cell Barred: false -> true
-  [ATTACK] CORESET0 Index: 6 -> 15
-  [ATTACK] SearchSpace0 Index: 0 -> 15
->> Encoding modified MIB...
->> Signal generation complete
-   Generated        : 23040 samples
-   Amplitude        : 0.70
-
---------------------------------------------------------
-  Transmitting Spoofed SSB
---------------------------------------------------------
-  Target PCI       : 500
-  Frequency        : 3750.00 MHz
-  TX Gain          : 89 dB
---------------------------------------------------------
-
->> Starting Continuous Attack Mode
-   Target PCI       : 500
-   Press Ctrl+C to stop...
-
-   Transmitting... 15342 bursts (30s, 511.4 bursts/s)
-
---------------------------------------------------------
-  Attack Statistics
---------------------------------------------------------
-  Total Bursts     : 15342
-  Total Time       : 30 seconds
-  Average Rate     : 511.4 bursts/second
---------------------------------------------------------
-
-========================================================
-  Attack Execution Complete
-========================================================
-```
 
 ## Demonstration
 
@@ -188,9 +106,9 @@ The effectiveness of the SSB spoofing attack can be observed through spectrum an
 
 ### With SSB Spoofer Active
 ![Spectrum with spoofer](assets/with_spoofer.png)
-*Spectrum during attack showing continuous spoofed SSB transmission overpowering legitimate signals*
+*Spectrum during attack showing continuous spoofed SSB transmission overpowering and out-numbering legitimate signals*
 
-The spoofed signals appear as continuous high-power transmissions that prevent UE devices from successfully completing cell selection and attachment procedures.
+The spoofed signals appear as continuous high-power transmissions that prevent UE devices from successfully completing cell selection and attachment procedures. The signal density and power demonstrate the attack in progress.
 
 ### Advanced Configuration
 

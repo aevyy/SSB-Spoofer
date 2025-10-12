@@ -58,10 +58,10 @@ struct AttackConfig {
   double    tx_power_offset_db;
   bool      continuous_tx;
   
-  // Advanced Attack Modes - MULTI-PCI BURST MODE
-  bool      enable_multi_pci_burst;    // Transmit MANY PCIs rapidly (500+/sec)
-  uint32_t  num_burst_pcis;            // Number of fake PCIs per burst (10-100)
-  uint32_t  burst_rate_hz;             // Bursts per second (100-1000 Hz)
+  // Burst Control Parameters
+  uint64_t  max_bursts;              ///< Maximum number of bursts (0 = unlimited)
+  uint32_t  burst_interval_us;       ///< Delay between bursts in microseconds (0 = minimum delay)
+  uint32_t  burst_length_ms;         ///< Length of each burst in milliseconds (controls samples per burst)
 };
 
 /**
