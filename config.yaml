@@ -17,7 +17,8 @@ rf:
 ssb:
   pattern: "A"                    # SSB pattern (A for FR1 < 3GHz)
   scs_khz: 15                     # Subcarrier spacing (15 kHz)
-  periodicity_ms: 10              # SSB periodicity (20 ms standard) - CRITICAL!
+  periodicity_ms: 10              # SSB periodicity for scanning
+                                  # (used by detector, NOT transmission timing!)
   
   ssb_freq_offset_hz: 0           # SSB frequency offset from center
   
@@ -52,11 +53,10 @@ attack:
   
   # Burst Control Parameters
   max_bursts: 0                   # Maximum number of bursts (0 = unlimited)
-  burst_interval_us: 500          # Delay between bursts in microseconds (0 = minimum)
-  burst_length_ms: 1              # Length of each burst in milliseconds (controls samples per burst)
-                                  # 1 ms = ~23,040 samples at 23.04 MHz
-                                  # 2 ms = ~46,080 samples, etc.
-                                  # Higher values = more samples per burst = longer transmission time
+  burst_interval_us: 9000         # Delay between bursts in microseconds (0 = minimum)
+  burst_length_ms: 1              # Number of SSBs per burst (1 SSB = 1 ms subframe)
+                                  
+  # EFFECTIVE PERIODICITY = burst_length_ms + (burst_interval_us / 1000)
 
 # Operational Parameters
 operation:
