@@ -4,6 +4,7 @@
 #include "config.h"
 #include <srsran/phy/sync/ssb.h>
 #include <srsran/phy/phch/pbch_msg_nr.h>
+#include <complex>
 #include <vector>
 #include <optional>
 #include <cstdint>
