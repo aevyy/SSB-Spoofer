@@ -31,7 +31,7 @@ ssb:
 
 # Attack Configuration
 attack:
-  target_pci: 500                 # Target Physical Cell ID
+  target_pci: 1                # Target Physical Cell ID
   scan_for_target: true           # Scan for specific PCI if true, for any PCI otherwise
   
   # SSB Spoofing Attack
