@@ -7,6 +7,7 @@ set(COMMON_SOURCES
     "${SPOOFER_SRC_DIR}/config.cc"
     "${SPOOFER_SRC_DIR}/rf_handler.cc"
     "${SPOOFER_SRC_DIR}/ssb_processor.cc"
+    "${SPOOFER_SRC_DIR}/app_core.cpp"
 )
 
 # Main SSB Spoofer executable
