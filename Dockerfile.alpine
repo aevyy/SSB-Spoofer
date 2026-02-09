@@ -1,0 +1,28 @@
+FROM ghcr.io/oran-testing/components_base
+
+WORKDIR /spoofer
+
+COPY . .
+
+RUN sed -i 's|#include "srsran/srslog/sink.h"|#include "srsran/srslog/sink.h"\n#undef stdout\n#undef stderr|g'   \
+    /spoofer/lib/src/srslog/sinks/stream_sink.h && \
+    sed -i '21s|.*|#include <sys/time.h>|g' /spoofer/lib/src/phy/io/netsource.c && \
+    sed -i -e '31,39s|.*||g' -e 's|#include <execinfo.h>||g' /spoofer/lib/src/common/backtrace.c && \
+    find /spoofer/ -type f -exec sed -i 's|uint |unsigned int |g' {} + && \
+    #sed -i '145,147s|.*||g' /spoofer/lib/src/common/threads.c && \
+    #sed -i '21s|.*|#include <endian.h>|g' /spoofer/lib/src/mac/mac_sch_pdu_nr.cc && \
+    #sed -i '21s|.*|#include <endian.h>|g' /spoofer/lib/src/mac/pdu.cc && \
+    #sed -i 's|u_int32_t|uint32_t|g' /spoofer/spoofer/src/stack/upper/nas.cc && \
+    sed -i -e '28,30s|.*||g' -e '61s|.*||g' /spoofer/lib/include/srsran/upper/ipv6.h
+
+
+RUN mkdir -p build && rm -rf build/*
+
+WORKDIR /spoofer/build
+
+
+RUN cmake -DENABLE_ZEROMQ=ON .. && \
+    make -j$(nproc) && \
+    make install
+
+CMD [ "ssb_spoofer", "--config", "/spoofer.yaml" ]
