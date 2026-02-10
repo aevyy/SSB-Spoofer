@@ -1,35 +1,28 @@
-FROM ubuntu:24.04
+FROM ghcr.io/oran-testing/components_base AS builder
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get upgrade -y && \
-    apt-get install -y \
-    cmake \
-    make \
-    gcc \
-    g++ \
-    pkg-config \
-    libzmq3-dev \
-    iproute2 \
-    uhd-host \
-    libgtest-dev \
-    iperf3 \
-    libfftw3-dev \
-    libmbedtls-dev \
-    libsctp-dev \
-    libyaml-cpp-dev \
-    net-tools \
-    libboost-all-dev \
-    libconfig++-dev \
-    libxcb-cursor0 \
-    libgles2-mesa-dev \
-    gr-osmosdr \
-    libuhd-dev
-
-RUN mkdir -p /app
-
-WORKDIR /app
+WORKDIR /spoofer
 
 COPY . .
+RUN sed -i 's|#include "srsran/srslog/sink.h"|#include "srsran/srslog/sink.h"\n#undef stdout\n#undef stderr|g'   \
+    /spoofer/lib/src/srslog/sinks/stream_sink.h && \
+    sed -i '21s|.*|#include <sys/time.h>|g' /spoofer/lib/src/phy/io/netsource.c && \
+    sed -i -e '31,39s|.*||g' -e 's|#include <execinfo.h>||g' /spoofer/lib/src/common/backtrace.c && \
+    find /spoofer/ -type f -exec sed -i 's|uint |unsigned int |g' {} + && \
+    sed -i -e '28,30s|.*||g' -e '61s|.*||g' /spoofer/lib/include/srsran/upper/ipv6.h
 
-RUN rm -rf build && mkdir -p build && cd build && cmake -DENABLE_ZEROMQ=ON .. && make -j$(nproc) && make install && ldconfig
+RUN mkdir -p build && rm -rf build/*
 
-CMD [ "ssb_spoofer", "--config", "/spoofer.yaml" ]
+WORKDIR /spoofer/build
+RUN cmake -DENABLE_ZEROMQ=ON .. && \
+    make -j$(nproc) && \
+    make install
+
+FROM alpine:latest
+ENV PYTHONUNBUFFERED=1
+RUN apk add --no-cache libstdc++ ca-certificates && update-ca-certificates || true
+
+COPY --from=builder /usr/local/bin/ssb_spoofer /usr/local/bin/ssb_spoofer
+
+ENV ARGS=""
+
+CMD ["sh", "-c", "/usr/local/bin/ssb_spoofer --config /spoofer.yaml $ARGS"]
